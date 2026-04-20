@@ -1,6 +1,6 @@
 /*
 Authors (group members): Jude-Anne Forsythe, Jules Siegelwax, Justyn Sinanan, Ethan Smith
-Email addresses of group members: jforsythe2024@my.fit.edu, asiegelwax2025@my.fit.edu, jsinanan2024@my.fit.edu, esmith2024@my.fit.edu
+Email addresses of group members: jforsythe2024@my.fit.edu, asiegelwax2025@my.fit.edu, jsinanan2024@my.fit.edu, ethan2024@my.fit.edu
 Group name: Sentinels
 Course: CSE2010
 Section: E1
