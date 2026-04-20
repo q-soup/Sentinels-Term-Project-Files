@@ -1,11 +1,11 @@
-
 /*
 Authors (group members): Jude-Anne Forsythe, Jules Siegelwax, Justyn Sinanan, Ethan Smith
-Email addresses of group members:
+Email addresses of group members: jforsythe2024@my.fit.edu, jsiegelwax2025@my.fit.edu, jsinanan2024@my.fit.edu, esmith2024@my.fit.edu
 Group name: Sentinels
 Course: CSE2010
 Section: E1
-Description of the overall algorithm:
+Description of the overall algorithm: We preprocess the dictionary into a byte array and find the optimal opening letter for each word length. During the actual gameplay, we use a "shrinking" list of candidate words that still match up with the revealed pattern and guessed letters. Each guess is gonna be the letter appearing the most in the remaining candidate words, with ties broken by a letter frequency list from DataGenetics. After each feedback call, the candidates are updated (in-place to preserve space).
+
 */
 
 import java.io.BufferedReader;
