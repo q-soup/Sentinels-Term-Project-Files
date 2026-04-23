@@ -5,6 +5,7 @@ Group name: Sentinels
 Course: CSE2010
 Section: E1
 Description of the overall algorithm: We preprocess the dictionary into a byte array and find the optimal opening letter for each word length. During the actual gameplay, we use a "shrinking" list of candidate words that still match up with the revealed pattern and guessed letters. Each guess is gonna be the letter appearing the most in the remaining candidate words, with ties broken by a letter frequency list from DataGenetics. After each feedback call, the candidates are updated (in-place to preserve space).
+                                    Version 2: we force garbage collection at three points during preprocessing to minimize the space usage measured by EvalHangmanPlayer. (Idea from GeeksforGeeks https://www.geeksforgeeks.org/java/garbage-collection-in-java/)
 
 */
 
@@ -57,7 +58,13 @@ public class HangmanPlayer {
                 totalBytes += len;
             }
         }
+
         br1.close();
+        br1 = null; // GC will remove data/objects as long as they are set to null
+        line = null;
+
+        // tell GC to get all the garbage from 1st words.txt pass
+        System.gc();
 
         // allocate array lengths
         wordData = new byte[totalBytes];
@@ -85,7 +92,17 @@ public class HangmanPlayer {
             writeByte += len;
             writeWord++;
         }
+
         br2.close();
+        br2.close();
+        br2 = null;
+        line2 = null;
+        lenCursor = null; //both
+        countPerLen = null; // not reused
+
+        // now collect garbage from second pass
+        System.gc();
+
         wordOffset[writeWord] = writeByte; // end of last word
 
         // compute first guesses by counting highest freq letters for each word length
@@ -120,7 +137,9 @@ public class HangmanPlayer {
                 }
             }
             firstGuess[L] = best;
+            cts = null;
         }
+        seenLocal = null; // this also doesn't get reused
 
         //make sure candididates are held by the largest bucket size since you cant change array sizes
         guessed = new boolean[26];
@@ -132,6 +151,9 @@ public class HangmanPlayer {
         candidates = new int[Math.max(maxBucket, 1)];
         candCount = 0;
         firstGuessOfWord = false;
+
+        // once more at the very end of preprocessing
+        System.gc();
 
     }
 
