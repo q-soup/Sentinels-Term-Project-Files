@@ -5,7 +5,7 @@ Group name: Sentinels
 Course: CSE2010
 Section: E1
 Description of the overall algorithm: We preprocess the dictionary into a byte array and find the optimal opening letter for each word length. During the actual gameplay, we use a "shrinking" list of candidate words that still match up with the revealed pattern and guessed letters. Each guess is gonna be the letter appearing the most in the remaining candidate words, with ties broken by a letter frequency list from DataGenetics. After each feedback call, the candidates are updated (in-place to preserve space).
-                                    Version 2: we force garbage collection at three points during preprocessing to minimize the space usage measured by EvalHangmanPlayer. (Idea from GeeksforGeeks https://www.geeksforgeeks.org/java/garbage-collection-in-java/)
+                                    Version 2: we force garbage collection at three points during preprocessing to minimize the space usage measured by EvalHangmanPlayer. (Idea from GeeksforGeeks https://www.geeksforgeeks.org/java/garbage-collection-in-java/) And we also tally letter frequency by letter position now instead of whether it just appears in a word.
 
 */
 
