@@ -37,9 +37,8 @@ public class HangmanPlayer {
 
     private boolean[] guessed; // keeps track of which letters have been guessed
     private boolean firstGuessOfWord; // true only on the first guess, then we will use the best first guess
-    private int[] letterCounts = new int[26]; // used to count letters during guess()
-    private boolean[] seen = new boolean[26]; // we only count letters once per word to find frequency, so this keeps
-                                              // track of letters we have counted already
+    private int[][] positionCounts = new int[MAX_LEN][26]; // used to count letters and track position during guess()
+    
 
     // initialize HangmanPlayer with a file of English words
     public HangmanPlayer(String wordFile) throws IOException {
@@ -94,7 +93,6 @@ public class HangmanPlayer {
         }
 
         br2.close();
-        br2.close();
         br2 = null;
         line2 = null;
         lenCursor = null; //both
@@ -107,7 +105,7 @@ public class HangmanPlayer {
 
         // compute first guesses by counting highest freq letters for each word length
         firstGuess = new char[MAX_LEN + 1];
-        boolean[] seenLocal = new boolean[26]; // different from seen[]
+        boolean[] seenLocal = new boolean[26]; 
 
         for (int L = 0; L <= MAX_LEN; L++) {
             int[] idxs = indicesByLength[L];
@@ -143,7 +141,7 @@ public class HangmanPlayer {
 
         //make sure candididates are held by the largest bucket size since you cant change array sizes
         guessed = new boolean[26];
-        seen = new boolean[26];
+        //seen = new boolean[26];
         int maxBucket = 0;
         for (int i = 0; i <= MAX_LEN; i++) {
                 maxBucket = Math.max(maxBucket, indicesByLength[i].length);
@@ -260,32 +258,30 @@ public class HangmanPlayer {
 
         // Set false first-guess mode after the opening turn.
         firstGuessOfWord = false;
-
+        //Updated
         // Clear old letter counts before counting again.
-        for (int i = 0; i < 26; i++) {
-            letterCounts[i] = 0;
+        for(int i = 0; i < L; i++){
+            for(int j = 0; j < 26; j++){
+                positionCounts[i][j] = 0;
+            }
         }
-
-        // Count how many candidate words contain each letter.
-        for (int w = 0; w < candCount; w++) {
+        // Count how many candidate words contain each letter at each position
+        for(int w = 0; w < candCount; w++){
             int wordIdx = candidates[w];
             int start = wordOffset[wordIdx];
-            int end = wordOffset[wordIdx + 1];
+            //int end = wordOffset[wordIdx + 1];
 
-            // Reset seen letters for this candidate word.
-            for (int i = 0; i < 26; i++) {
-                seen[i] = false;
+            for(int i = 0; i < L; i++){
+                int b = wordData[start + i] - 'a';
+                positionCounts[i][b]++;
             }
-
-            // Scan each letter in the current candidate word.
-            for (int i = start; i < end; i++) {
-                byte letter = wordData[i];
-                int b = letter - 'a';
-
-                // Count each letter only once per word.
-                if (!seen[b]) {
-                    seen[b] = true;
-                    letterCounts[b]++;
+        }
+        //find new frequency of each letter counting only unrevealed positions
+        int[] freq = new int[26];
+        for(int i = 0; i < L; i++){
+            if(currentWord.charAt(i) == ' '){
+                for (int j = 0; j < 26; j++){
+                    freq[j] += positionCounts[i][j];
                 }
             }
         }
@@ -305,8 +301,8 @@ public class HangmanPlayer {
             }
 
             // Update the best guess if this letter appears in more words.
-            if (letterCounts[b] > bestCount) {
-                bestCount = letterCounts[b];
+            if (freq[b] > bestCount) {
+                bestCount = freq[b];
                 best = c;
             }
         }
